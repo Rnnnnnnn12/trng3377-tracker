@@ -111,68 +111,96 @@ document.addEventListener('DOMContentLoaded', function () {
 
 // Function to load ingredients from localStorage
 // Add event listener for DOMContentLoaded to load saved ingredients
-document.addEventListener('DOMContentLoaded', function() {
-    loadIngredients();
-});
+// document.addEventListener('DOMContentLoaded', function() {
+//     loadIngredients();
+// });
 
 // Function to add a new ingredient field
-function addField() {
-    const container = document.getElementById('ingredientsContainer');
-    const newField = document.createElement('div');
-    newField.className = 'form-inline';
-    newField.innerHTML = `
-        <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Ingredient">
-        <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Quantity">
-        <select class="form-control mb-2 mr-sm-2">
-            <option value="grams">Grams</option>
-            <option value="cups">Cups</option>
-            <option value="ml">Milliliters</option>
-        </select>
-        <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
-    `;
-    container.appendChild(newField);
-    saveIngredients();
-}
+// function addField() {
+//     const container = document.getElementById('ingredientsContainer');
+//     const newField = document.createElement('div');
+//     newField.className = 'form-inline';
+//     newField.innerHTML = `
+//         <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Ingredient">
+//         <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Quantity">
+//         <select class="form-control mb-2 mr-sm-2">
+//             <option value="grams">Grams</option>
+//             <option value="cups">Cups</option>
+//             <option value="ml">Milliliters</option>
+//         </select>
+//         <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
+//     `;
+//     container.appendChild(newField);
+//     saveIngredients();
+// }
 
 // Function to remove an ingredient field
-function removeField(element) {
+// function removeField(element) {
+//     element.parentNode.remove();
+//     saveIngredients();
+// }
+let ingredientCount = 1;
+
+function addField() {
+    ingredientCount++;
+    const container = document.getElementById('ingredientsContainer');
+    const newField = document.createElement('div');
+    newField.className = 'form-inline mb-3';
+    newField.innerHTML = `
+      <div class="input-group">
+        <input type="text" class="form-control-plaintext" id="ingredientName${ingredientCount}" placeholder="Enter ingredient name" style="border-bottom: 1px solid #ced4da;">
+      </div>
+      <div class="input-group">
+        <input type="number" class="form-control" id="amount${ingredientCount}" placeholder="Amount">
+        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
+        <ul class="dropdown-menu">
+          <li><button class="dropdown-item" type="button">Grams</button></li>
+          <li><button class="dropdown-item" type="button">Ounces</button></li>
+          <li><button class="dropdown-item" type="button">Cups</button></li>
+        </ul>
+      </div>
+      <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
+    `;
+    container.appendChild(newField);
+  }
+
+  function removeField(element) {
     element.parentNode.remove();
-    saveIngredients();
-}
+  }
 
 // Function to save ingredients to localStorage
-function saveIngredients() {
-    const ingredients = [];
-    document.querySelectorAll('#ingredientsContainer .form-inline').forEach(div => {
-        const ingredient = div.querySelector('input[type=text]').value;
-        const quantity = div.querySelector('input[type=number]').value;
-        const unit = div.querySelector('select').value;
-        ingredients.push({ ingredient, quantity, unit });
-    });
-    localStorage.setItem('ingredients', JSON.stringify(ingredients));
-}
+// function saveIngredients() {
+//     const ingredients = [];
+//     document.querySelectorAll('#ingredientsContainer .form-inline').forEach(div => {
+//         const ingredient = div.querySelector('input[type=text]').value;
+//         const quantity = div.querySelector('input[type=number]').value;
+//         const unit = div.querySelector('select').value;
+//         ingredients.push({ ingredient, quantity, unit });
+//     });
+//     localStorage.setItem('ingredients', JSON.stringify(ingredients));
+// }
 
 // Function to load ingredients from localStorage
-function loadIngredients() {
-    const ingredients = JSON.parse(localStorage.getItem('ingredients'));
-    if (ingredients) {
-        const container = document.getElementById('ingredientsContainer');
-        container.innerHTML = ''; // Clear existing fields
-        ingredients.forEach(data => {
-            const newField = document.createElement('div');
-            newField.className = 'form-inline';
-            newField.innerHTML = `
-                <input type="text" class="form-control mb-2 mr-sm-2" value="${data.ingredient}" placeholder="Ingredient">
-                <input type="number" class="form-control mb-2 mr-sm-2" value="${data.quantity}" placeholder="Quantity">
-                <select class="form-control mb-2 mr-sm-2">
-                    <option value="grams" ${data.unit === 'grams' ? 'selected' : ''}>Grams</option>
-                    <option value="cups" ${data.unit === 'cups' ? 'selected' : ''}>Cups</option>
-                    <option value="ml" ${data.unit === 'ml' ? 'selected' : ''}>Milliliters</option>
-                </select>
-                <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
-            `;
-            container.appendChild(newField);
-        });
-    }
-}
+// function loadIngredients() {
+//     const ingredients = JSON.parse(localStorage.getItem('ingredients'));
+//     if (ingredients) {
+//         const container = document.getElementById('ingredientsContainer');
+//         container.innerHTML = ''; // Clear existing fields
+//         ingredients.forEach(data => {
+//             const newField = document.createElement('div');
+//             newField.className = 'form-inline';
+//             newField.innerHTML = `
+//                 <input type="text" class="form-control mb-2 mr-sm-2" value="${data.ingredient}" placeholder="Ingredient">
+//                 <input type="number" class="form-control mb-2 mr-sm-2" value="${data.quantity}" placeholder="Quantity">
+//                 <select class="form-control mb-2 mr-sm-2">
+//                     <option value="grams" ${data.unit === 'grams' ? 'selected' : ''}>Grams</option>
+//                     <option value="cups" ${data.unit === 'cups' ? 'selected' : ''}>Cups</option>
+//                     <option value="ml" ${data.unit === 'ml' ? 'selected' : ''}>Milliliters</option>
+//                 </select>
+//                 <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
+//             `;
+//             container.appendChild(newField);
+//         });
+//     }
+// }
 

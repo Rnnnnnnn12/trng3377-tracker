@@ -274,37 +274,44 @@
                     Toppings
                   </button>
                 </h2>
+
                 <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
                   <div class="accordion-body">
-
-
                     <div class="container mt-5">
                       <h2>Ingredients Form</h2>
                       <form id="ingredientsForm">
                         <div id="ingredientsContainer">
                           <!-- Initial set of fields -->
                           <div class="form-inline">
-                            <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Ingredient"
-                              id="ingredient" name="ingredient">
-                            <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Quantity" id="quantity"
-                              name="quantity">
-                            <select class="form-control mb-2 mr-sm-2" id="measurement" name="measurement">
-                              <option value="grams">Grams</option>
-                              <option value="cups">Cups</option>
-                              <option value="ml">Milliliters</option>
-                            </select>
+                            <div class="input-group">
+                              <input type="text" class="form-control-plaintext" id="ingredientName10"
+                                placeholder="Enter ingredient name" style="border-bottom: 1px solid #ced4da;">
+                            </div>
+                            <div class="input-group">
+                              <input type="number" class="form-control" id="amount10" placeholder="Amount">
+                              <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
+                              <ul class="dropdown-menu">
+                                <li><button class="dropdown-item" type="button">Grams</button></li>
+                                <li><button class="dropdown-item" type="button">Ounces</button></li>
+                                <li><button class="dropdown-item" type="button">Cups</button></li>
+                              </ul>
+                            </div>
+
                             <button type="button" class="btn btn-danger mb-2"
-                              onclick="removeField(this)">Remove</button>
+                              onclick="removeField(element)">Remove</button>
                           </div>
                         </div>
-                        <button type="button" class="btn btn-primary mb-2" onclick="addField()">Add More</button>
                       </form>
-                    </div>
 
+                      <button type="button" class="btn btn-primary mb-2" onclick="addField()">Add More</button>
+                    </div>
 
 
                   </div>
                 </div>
+
+
               </div>
 
               <div class="accordion-item">
