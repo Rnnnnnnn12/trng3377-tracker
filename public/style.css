@@ -1,0 +1,40 @@
+
+
+#imageDropBox {
+  transition: all 0.3s ease;
+  color: #aaa;
+  font-size: 16px;
+}
+
+#imageDropBox:hover {
+  border-color: #888;
+  color: #666;
+}
+
+.container {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.form-group label {
+  font-weight: bold;
+}
+
+.btn-group .btn {
+  text-transform: capitalize; /* Makes the first letter uppercase */
+}
+
+input[type="text"] {
+  border-radius: 20px;
+}
+
+
+.form-inline .form-control {
+  margin-right: 10px;
+  margin-bottom: 10px;
+}
+.form-inline button {
+  margin-bottom: 10px;
+}
