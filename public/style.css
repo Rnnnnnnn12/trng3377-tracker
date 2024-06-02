@@ -11,19 +11,19 @@
   color: #666;
 }
 
-.container {
+/* .container {
   background-color: #fff;
   padding: 20px;
   border-radius: 8px;
   box-shadow: 0 0 10px rgba(0,0,0,0.1);
-}
+} 
 
 .form-group label {
   font-weight: bold;
 }
 
 .btn-group .btn {
-  text-transform: capitalize; /* Makes the first letter uppercase */
+  text-transform: capitalize; 
 }
 
 input[type="text"] {
@@ -37,4 +37,4 @@ input[type="text"] {
 }
 .form-inline button {
   margin-bottom: 10px;
-}
+} */

@@ -1,4 +1,50 @@
-// NOTE: CHECK RECOMMENDATION IN CHAT
+document.addEventListener('DOMContentLoaded', function () {
+    let cropper;
+    const imageUpload = document.getElementById('imageUpload');
+    const imageDropBox = document.getElementById('imageDropBox');
+    const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+    const imagePreview = document.getElementById('imagePreview');
+    const cropButton = document.getElementById('cropButton');
+  
+    // Event listener for image upload
+    imageUpload.addEventListener('change', function () {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function (e) {
+          imagePreview.src = e.target.result;
+          imagePreviewContainer.style.display = 'block';
+          imageDropBox.style.display = 'none';
+  
+          // Initialize Cropper.js
+          if (cropper) {
+            cropper.destroy();
+          }
+          cropper = new Cropper(imagePreview, {
+            aspectRatio: 2 / 1,
+            viewMode: 1,
+            autoCropArea: 1,
+            responsive: true,
+            background: false,
+          });
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  
+    // Event listener for crop button
+    cropButton.addEventListener('click', function () {
+      if (cropper) {
+        const canvas = cropper.getCroppedCanvas();
+        const url = canvas.toDataURL('image/jpeg');
+        localStorage.setItem('uploadedImage', url); // Save the cropped image in Local Storage
+        imageDropBox.innerHTML = `<img src="${url}" style="width: 100%; height: auto; max-height: 300px;">`;
+        imagePreviewContainer.style.display = 'none';
+        imageDropBox.style.display = 'inline-flex';
+      }
+    });
+  });
+  
 
 document.addEventListener('DOMContentLoaded', function () {
     // Load saved image from local storage
@@ -47,21 +93,20 @@ document.addEventListener('DOMContentLoaded', function () {
     // Display saved pizzas
     displaySavedPizzas();
 
-    // Event listener for submit button
+    // Event listener for submit/save button
     document.getElementById('submitButton').addEventListener('click', function () {
         savePizzaDetails();
-        alert('Data is saved!');
-        console.log('Data is saved!')
     });
 
     // Event listener for close button
     document.getElementById('closeButton').addEventListener('click', function () {
         if (confirm('Do you really want to close without saving?')) {
-            $('#viewPizzaModal').modal('hide');
+            $('#fullscreenModal').modal('hide');
         }
     });
 
-
+    // Display all pizzas by default
+    showAllPizzas();
 });
 
 // Variables
@@ -180,7 +225,6 @@ function removeLocalIngredients(ingredient) {
     localStorage.setItem('ingredients', JSON.stringify(ingredients));
 }
 
-
 function savePizzaDetails() {
     const pizzaName = document.getElementById('pizzaName').value;
     const pizzaDescription = document.getElementById('pizzaDescription').value;
@@ -188,50 +232,86 @@ function savePizzaDetails() {
     const ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
     const imageUrl = localStorage.getItem('uploadedImage');
 
+    const baseIngredients = {
+        flour: { amount: document.getElementById('flourAmount').value, unit: document.querySelector('#flourAmount + .dropdown-toggle').textContent },
+        yeast: { amount: document.getElementById('yeastAmount').value, unit: document.querySelector('#yeastAmount + .dropdown-toggle').textContent },
+        salt: { amount: document.getElementById('saltAmount').value, unit: document.querySelector('#saltAmount + .dropdown-toggle').textContent },
+        water: { amount: document.getElementById('waterAmount').value, unit: document.querySelector('#waterAmount + .dropdown-toggle').textContent },
+        oil: { amount: document.getElementById('oilAmount').value, unit: document.querySelector('#oilAmount + .dropdown-toggle').textContent },
+        others: document.getElementById('otherIngredients').value.split(',').map(ingredient => ({
+            ingredient: ingredient.trim(),
+            unit: selectedUnit
+        }))
+    };
+
+    const crustType = document.querySelector('.btn-group .btn.active').textContent;
+
+    const instructions = {
+        base: {
+            instructions: document.getElementById('baseInstructions').value,
+            duration: document.getElementById('baseDuration').value
+        },
+        toppings: {
+            instructions: document.getElementById('toppingsInstructions').value,
+            duration: document.getElementById('toppingsDuration').value
+        },
+        baking: {
+            instructions: document.getElementById('bakingInstructions').value,
+            duration: document.getElementById('bakingDuration').value
+        }
+    };
+
     const pizzaData = {
         pizzaName,
         pizzaDescription,
         pizzaServing,
         ingredients,
+        baseIngredients,
+        crustType,
+        instructions,
         imageUrl
     };
 
     let pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
-    pizzas.push(pizzaData);
+    if (currentPizzaIndex > -1) {
+        pizzas[currentPizzaIndex] = pizzaData;
+        document.getElementById('submitButton').textContent = 'Submit'; // Reset button text to Submit
+        currentPizzaIndex = -1;
+    } else {
+        pizzas.push(pizzaData);
+    }
     localStorage.setItem('pizzas', JSON.stringify(pizzas));
     alert('Pizza details saved!');
 
     displaySavedPizzas();
 }
 
+// function displaySavedPizzas() {
+//     const cardsContainer = document.getElementById('cardsContainer');
+//     if (!cardsContainer) {
+//         console.error('Element with ID "cardsContainer" not found.');
+//         return;
+//     }
+//     cardsContainer.innerHTML = '';
+//     const pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
 
-function displaySavedPizzas() {
-    const cardsContainer = document.getElementById('cardsContainer');
-    if (!cardsContainer) {
-        console.error('Element with ID "cardsContainer" not found.');
-        return;
-    }
-    cardsContainer.innerHTML = '';
-    const pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
-
-    pizzas.forEach((pizza, index) => {
-        const card = document.createElement('div');
-        card.classList.add('col-sm-4', 'mb-3');
-        const imageUrl = pizza.imageUrl || 'default-image.jpg'; // Use default image if imageUrl is empty
-        card.innerHTML = `
-            <div class="card">
-                <div class="card-body">
-                    <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
-                    <h5 class="card-title">${pizza.pizzaName}</h5>
-                    <p class="card-text">${pizza.pizzaDescription}</p>
-                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
-                </div>
-            </div>
-        `;
-        cardsContainer.appendChild(card);
-    });
-}
-
+//     pizzas.forEach((pizza, index) => {
+//         const card = document.createElement('div');
+//         card.classList.add('col-sm-4', 'mb-3');
+//         const imageUrl = pizza.imageUrl || 'default-image.jpg'; // Use default image if imageUrl is empty
+//         card.innerHTML = `
+//             <div class="card">
+//                 <div class="card-body">
+//                     <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
+//                     <h5 class="card-title">${pizza.pizzaName}</h5>
+//                     <p class="card-text">${pizza.pizzaDescription}</p>
+//                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
+//                 </div>
+//             </div>
+//         `;
+//         cardsContainer.appendChild(card);
+//     });
+// }
 
 function loadPizzaDetails(index) {
     const pizzas = JSON.parse(localStorage.getItem('pizzas'));
@@ -239,49 +319,102 @@ function loadPizzaDetails(index) {
     currentPizzaIndex = index;
 
     if (pizza) {
+        const baseIngredients = pizza.baseIngredients;
+        const baseIngredientList = Object.keys(baseIngredients).filter(key => baseIngredients[key].amount).map(key => `${key.charAt(0).toUpperCase() + key.slice(1)}: ${baseIngredients[key].amount} ${baseIngredients[key].unit}`);
+
+        const otherIngredients = baseIngredients.others.filter(ingredient => ingredient.ingredient).map(ingredient => `Other: ${ingredient.ingredient} - ${ingredient.unit}`);
+
         const modalContent = `
         <div class="modal fade" id="viewPizzaModal" tabindex="-1" aria-labelledby="viewPizzaModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <h3 id="modalPizzaName">${pizza.pizzaName}</h3>
-                    <p id="modalPizzaDescription">${pizza.pizzaDescription}</p>
-                            <p id="modalPizzaDescription">${pizza.pizzaDescription}</p>
-                            <p><strong>Serving Size:</strong> <span id="modalPizzaServing">${pizza.pizzaServing}</span></p>
-                            <h5>Ingredients:</h5>
-                            <ul id="modalPizzaIngredients">
-                                ${pizza.ingredients.map(ingredient => `<li>${ingredient.ingredient} - ${ingredient.quantity} ${ingredient.unit}</li>`).join('')}
-                            </ul>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="editButton" onclick="editPizzaDetails()">Edit</button>
-                            <button type="button" class="btn btn-danger" id="deleteButton" onclick="deletePizzaDetails()">Delete</button>
-                        </div>
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <h3 id="modalPizzaName">${pizza.pizzaName}</h3>
+                        <p id="modalPizzaDescription">${pizza.pizzaDescription}</p>
+                        <p><strong>Serving Size:</strong> <span id="modalPizzaServing">${pizza.pizzaServing}</span></p>
+                        <h5>Base Ingredients:</h5>
+                        <ul id="modalBaseIngredients">
+                            ${baseIngredientList.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                            ${otherIngredients.map(ingredient => `<li>${ingredient}</li>`).join('')}
+                        </ul>
+                        <h5>Toppings:</h5>
+                        <ul id="modalPizzaIngredients">
+                            ${pizza.ingredients.map(ingredient => `<li>${ingredient.ingredient} - ${ingredient.quantity} ${ingredient.unit}</li>`).join('')}
+                        </ul>
+                        <h5>Crust Type:</h5>
+                        <p>${pizza.crustType}</p>
+                        <h5>Instructions:</h5>
+                        <h6>Base</h6>
+                        <p>${pizza.instructions.base.instructions}</p>
+                        <p><strong>Duration:</strong> ${pizza.instructions.base.duration}</p>
+                        <h6>Toppings</h6>
+                        <p>${pizza.instructions.toppings.instructions}</p>
+                        <p><strong>Duration:</strong> ${pizza.instructions.toppings.duration}</p>
+                        <h6>Baking</h6>
+                        <p>${pizza.instructions.baking.instructions}</p>
+                        <p><strong>Duration:</strong> ${pizza.instructions.baking.duration}</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="editButton" onclick="editPizzaDetails()">Edit</button>
+                        <button type="button" class="btn btn-danger" id="deleteButton" onclick="deletePizzaDetails()">Delete</button>
                     </div>
                 </div>
             </div>
+        </div>
         `;
         createAndShowModal(modalContent);
     }
 }
-
-
 
 function editPizzaDetails() {
     const pizzas = JSON.parse(localStorage.getItem('pizzas'));
     const pizza = pizzas[currentPizzaIndex];
 
     if (pizza) {
+        $('#viewPizzaModal').modal('hide'); // Hide the view modal
+        document.getElementById('fullscreenModalLabel').textContent = 'Edit Pizza'; // Change heading to Edit Pizza
         document.getElementById('pizzaName').value = pizza.pizzaName;
         document.getElementById('pizzaDescription').value = pizza.pizzaDescription;
         document.getElementById('pizzaServing').value = pizza.pizzaServing;
         localStorage.setItem('ingredients', JSON.stringify(pizza.ingredients));
-        $('#fullscreenModal').modal('show');
+
+        const baseIngredients = pizza.baseIngredients;
+        document.getElementById('flourAmount').value = baseIngredients.flour.amount;
+        document.querySelector('#flourAmount + .dropdown-toggle').textContent = baseIngredients.flour.unit;
+        document.getElementById('yeastAmount').value = baseIngredients.yeast.amount;
+        document.querySelector('#yeastAmount + .dropdown-toggle').textContent = baseIngredients.yeast.unit;
+        document.getElementById('saltAmount').value = baseIngredients.salt.amount;
+        document.querySelector('#saltAmount + .dropdown-toggle').textContent = baseIngredients.salt.unit;
+        document.getElementById('waterAmount').value = baseIngredients.water.amount;
+        document.querySelector('#waterAmount + .dropdown-toggle').textContent = baseIngredients.water.unit;
+        document.getElementById('oilAmount').value = baseIngredients.oil.amount;
+        document.querySelector('#oilAmount + .dropdown-toggle').textContent = baseIngredients.oil.unit;
+        document.getElementById('otherIngredients').value = baseIngredients.others.map(ingredient => ingredient.ingredient).join(', ');
+
+        const instructions = pizza.instructions;
+        document.getElementById('baseInstructions').value = instructions.base.instructions;
+        document.getElementById('baseDuration').value = instructions.base.duration;
+        document.getElementById('toppingsInstructions').value = instructions.toppings.instructions;
+        document.getElementById('toppingsDuration').value = instructions.toppings.duration;
+        document.getElementById('bakingInstructions').value = instructions.baking.instructions;
+        document.getElementById('bakingDuration').value = instructions.baking.duration;
+
+        // Set the crust type button
+        document.querySelectorAll('.btn-group .btn').forEach(btn => {
+            if (btn.textContent === pizza.crustType) {
+                btn.classList.add('active');
+            } else {
+                btn.classList.remove('active');
+            }
+        });
+
+        document.getElementById('submitButton').textContent = 'Save'; // Change button text to Save
+        $('#fullscreenModal').modal('show'); // Show the edit modal
     }
 }
 
@@ -296,7 +429,6 @@ function deletePizzaDetails() {
         $('#viewPizzaModal').modal('hide');
     }
 }
-
 
 function createAndShowModal(modalContent) {
     // Create a new div for the modal
@@ -318,3 +450,91 @@ function createAndShowModal(modalContent) {
     $(modalDiv).find("#viewPizzaModal").modal('show');
 }
 
+
+
+// Function to show all pizzas
+function showAllPizzas() {
+    document.getElementById('cardsContainer').innerHTML = '';
+    displaySavedPizzas();
+}
+
+// Function to show favorite pizzas
+function showFavoritePizzas() {
+    document.getElementById('cardsContainer').innerHTML = '';
+    displayFavoritePizzas();
+}
+
+// Function to toggle favorite status
+function toggleFavorite(index) {
+    let pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
+    pizzas[index].isFavorite = !pizzas[index].isFavorite;
+    localStorage.setItem('pizzas', JSON.stringify(pizzas));
+    displaySavedPizzas();
+}
+
+// Function to display saved pizzas
+function displaySavedPizzas() {
+    const cardsContainer = document.getElementById('cardsContainer');
+    if (!cardsContainer) {
+        console.error('Element with ID "cardsContainer" not found.');
+        return;
+    }
+    cardsContainer.innerHTML = '';
+    const pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
+
+    pizzas.forEach((pizza, index) => {
+        const card = document.createElement('div');
+        card.classList.add('col-sm-4', 'mb-3');
+        const imageUrl = pizza.imageUrl || 'default-image.jpg'; // Use default image if imageUrl is empty
+        const favoriteClass = pizza.isFavorite ? 'btn btn-warning' : 'btn btn-outline-warning';
+        card.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
+                    <h5 class="card-title">${pizza.pizzaName}</h5>
+                    <p class="card-text">${pizza.pizzaDescription}</p>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
+                    <button class="${favoriteClass}" onclick="toggleFavorite(${index})">${pizza.isFavorite ? 'Unfavorite' : 'Favorite'}</button>
+                </div>
+            </div>
+        `;
+        cardsContainer.appendChild(card);
+    });
+}
+
+// Function to display favorite pizzas
+function displayFavoritePizzas() {
+    const cardsContainer = document.getElementById('cardsContainer');
+    if (!cardsContainer) {
+        console.error('Element with ID "cardsContainer" not found.');
+        return;
+    }
+    cardsContainer.innerHTML = '';
+    const pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
+
+    pizzas.forEach((pizza, index) => {
+        if (pizza.isFavorite) {
+            const card = document.createElement('div');
+            card.classList.add('col-sm-4', 'mb-3');
+            const imageUrl = pizza.imageUrl || 'default-image.jpg'; // Use default image if imageUrl is empty
+            const favoriteClass = pizza.isFavorite ? 'btn btn-warning' : 'btn btn-outline-warning';
+            card.innerHTML = `
+                <div class="card">
+                    <div class="card-body">
+                        <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
+                        <h5 class="card-title">${pizza.pizzaName}</h5>
+                        <p class="card-text">${pizza.pizzaDescription}</p>
+                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
+                        <button class="${favoriteClass}" onclick="toggleFavorite(${index})">${pizza.isFavorite ? 'Unfavorite' : 'Favorite'}</button>
+                    </div>
+                </div>
+            `;
+            cardsContainer.appendChild(card);
+        }
+    });
+}
+
+// Initial display of all pizzas
+document.addEventListener('DOMContentLoaded', function () {
+    showAllPizzas();
+});
