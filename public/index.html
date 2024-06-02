@@ -105,10 +105,12 @@
   <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">">
       <div class="modal-content">
+
         <div class="modal-header">
           <h5 class="modal-title" id="fullscreenModalLabel">Add New Pizza</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
+
         <div class="modal-body">
           <!-- Upload images -->
           <div>
@@ -146,10 +148,11 @@
           </div>
 
           <div class="mb-3">
-            <label for="pizzaServing" class="form-label">Ingredient Input</label>
+            <!-- <label for="pizzaIngredients" class="form-label">Ingredient Input</label> -->
+            <p class="form-label">Ingredient Input</p>
             <!-- Ingredients -->
-            <div class="accordion" id="accordionPanelsStayOpenExample">
-              <div class="accordion-item">
+            <div class="accordion">
+              <div class="accordion-item" id="pizzaIngredients">
                 <h2 class="accordion-header">
                   <button class="accordion-button" type="button" data-bs-toggle="collapse"
                     data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
@@ -264,9 +267,10 @@
                   </div>
                 </div>
               </div>
+              <!-- </div> -->
 
               <!-- TOPPINGS 1 -->
-              <div class="accordion-item">
+              <div class="accordion-item" id="pizzaToppings">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#panelsStayOpen-collapseTwo" aria-expanded="false"
@@ -277,44 +281,36 @@
 
                 <div id="panelsStayOpen-collapseTwo" class="accordion-collapse collapse">
                   <div class="accordion-body">
-                    <div class="container mt-5">
-                      <h2>Ingredients Form</h2>
-                      <form id="ingredientsForm">
-                        <div id="ingredientsContainer">
-                          <!-- Initial set of fields -->
-                          <div class="form-inline">
-                            <div class="input-group">
-                              <input type="text" class="form-control-plaintext" id="ingredientName10"
-                                placeholder="Enter ingredient name" style="border-bottom: 1px solid #ced4da;">
-                            </div>
-                            <div class="input-group">
-                              <input type="number" class="form-control" id="amount10" placeholder="Amount">
-                              <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                                data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
-                              <ul class="dropdown-menu">
-                                <li><button class="dropdown-item" type="button">Grams</button></li>
-                                <li><button class="dropdown-item" type="button">Ounces</button></li>
-                                <li><button class="dropdown-item" type="button">Cups</button></li>
-                              </ul>
-                            </div>
 
-                            <button type="button" class="btn btn-danger mb-2"
-                              onclick="removeField(element)">Remove</button>
-                          </div>
+                    <div id="form" class="container mt-4">
+                      <form class="form-inline">
+                        <input class="ingredient-input form-control mr-2" type="text" placeholder="Add an ingredient"
+                          id="ingredientInput">
+                        <input class="quantity-input form-control mr-2" type="number" placeholder="Quantity"
+                          id="quantityInput">
+
+
+                        <div class="input-group">
+                          <button class="btn btn-outline-secondary dropdown-toggle" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
+                          <ul class="dropdown-menu">
+                            <li><button class="dropdown-item" type="button">Grams</button></li>
+                            <li><button class="dropdown-item" type="button">Once</button></li>
+                            <li><button class="dropdown-item" type="button">Ml</button></li>
+                            <li><button class="dropdown-item" type="button">Cups</button></li>
+                          </ul>
                         </div>
+
+
+                        <button class="ingredient-btn btn btn-primary ml-2" type="submit">Add Ingredient</button>
                       </form>
-
-                      <button type="button" class="btn btn-primary mb-2" onclick="addField()">Add More</button>
                     </div>
-
-
+                    <ul class="ingredient-list list-group container mt-4"></ul>
                   </div>
                 </div>
-
-
               </div>
 
-              <div class="accordion-item">
+              <div class="accordion-item" id="pizzaInstructions">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
                     data-bs-target="#panelsStayOpen-collapseThree" aria-expanded="false"
@@ -325,40 +321,38 @@
                 <div id="panelsStayOpen-collapseThree" class="accordion-collapse collapse">
                   <div class="accordion-body">
                     <div class="mb-3">
-                      <label for="exampleFormControlTextarea1" class="form-label">Base Instructions</label>
-                      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                      <label for="baseInstructions" class="form-label">Base Instructions</label>
+                      <textarea class="form-control" id="baseInstructions" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Duration</label>
-                      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="20min">
-                    </div>
-                  </div>
-
-                  <div class="accordion-body">
-                    <div class="mb-3">
-                      <label for="exampleFormControlTextarea1" class="form-label">Toppings Instructions</label>
-                      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                    </div>
-                    <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Duration</label>
-                      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="20min">
+                      <label for="baseDuration" class="form-label">Duration</label>
+                      <input type="text" class="form-control" id="baseDuration" placeholder="20min">
                     </div>
                   </div>
 
                   <div class="accordion-body">
                     <div class="mb-3">
-                      <label for="exampleFormControlTextarea1" class="form-label">Baking Instructions</label>
-                      <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
+                      <label for="toppingsInstructions" class="form-label">Toppings Instructions</label>
+                      <textarea class="form-control" id="toppingsInstructions" rows="3"></textarea>
                     </div>
                     <div class="mb-3">
-                      <label for="exampleFormControlInput1" class="form-label">Duration</label>
-                      <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="20min">
+                      <label for="toppingsDuration" class="form-label">Duration</label>
+                      <input type="text" class="form-control" id="toppingsDuration" placeholder="20min">
+                    </div>
+                  </div>
+
+                  <div class="accordion-body">
+                    <div class="mb-3">
+                      <label for="bakingInstructions" class="form-label">Baking Instructions</label>
+                      <textarea class="form-control" id="bakingInstructions" rows="3"></textarea>
+                    </div>
+                    <div class="mb-3">
+                      <label for="bakingDuration" class="form-label">Duration</label>
+                      <input type="text" class="form-control" id="bakingDuration" placeholder="20min">
                     </div>
                   </div>
                 </div>
               </div>
-
-
 
             </div>
           </div>
@@ -366,30 +360,8 @@
 
 
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-
-
-        <!-- Modal to View Pizza Data -->
-        <div class="modal fade" id="viewPizzaModal" tabindex="-1" aria-labelledby="viewPizzaModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <h3 id="modalPizzaName"></h3>
-                <p id="modalPizzaDescription"></p>
-                <p><strong>Serving Size:</strong> <span id="modalPizzaServing"></span></p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              </div>
-            </div>
-          </div>
+          <button type="button" class="btn btn-secondary" id="closeButton">Close</button>
+          <button type="button" class="btn btn-primary" id="submitButton">Submit</button>
         </div>
 
       </div>
@@ -412,30 +384,31 @@
         </li>
       </ul>
     </div>
-    <div class="card-body">
 
+
+    <div class="card-body">
       <!-- Individual cards -->
       <div class="container">
         <!-- First row with three cards -->
-        <div class="row">
+        <div class="row" id="cardsContainer">
 
-          <!-- Card -->
-          <div class="col-sm-4 mb-3">
+          <!-- Blank Card -->
+          <div class="col-sm-4 mb-3" id="pizzaCardContainer">
             <div class="card">
               <div class="card-body">
-                <img src="/public/images/pepperoni.jpeg" class="img-fluid" alt="first-img">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                <img src="/public/images/placeholder.png" class="img-fluid" alt="Pizza Image" id="pizzaCardImage">
+                <h5 class="card-title" id="pizzaCardTitle">Pizza Name</h5>
+                <p class="card-text" id="pizzaCardDescription">Pizza Description</p>
                 <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal"
-                  onclick="loadPizzaData()">View Pizza</a>
+                  onclick="loadPizzaDetails()">View Pizza</a>
               </div>
             </div>
           </div>
 
-          <!-- Modal -->
+          <!-- View Pizza Modal -->
           <div class="modal fade" id="viewPizzaModal" tabindex="-1" aria-labelledby="viewPizzaModalLabel"
             aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog modal-xl">
               <div class="modal-content">
                 <div class="modal-header">
                   <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
@@ -450,79 +423,26 @@
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary" id="editButton">Edit</button>
+                  <button type="button" class="btn btn-danger" id="deleteButton">Delete</button>
                 </div>
               </div>
             </div>
           </div>
 
-
-
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="/public/images/pepperoni.jpeg" class="img-fluid" alt="first-img">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="/public/images/pepperoni.jpeg" class="img-fluid" alt="first-img">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Second row with three cards -->
-        <div class="row">
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="/public/images/pepperoni.jpeg" class="img-fluid" alt="first-img">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="/public/images/pepperoni.jpeg" class="img-fluid" alt="first-img">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
-          <div class="col-sm-4 mb-3">
-            <div class="card">
-              <div class="card-body">
-                <img src="/public/images/pepperoni.jpeg" class="img-fluid" alt="first-img">
-                <h5 class="card-title">Special title treatment</h5>
-                <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                <a href="#" class="btn btn-primary">Go somewhere</a>
-              </div>
-            </div>
-          </div>
         </div>
       </div>
-
     </div>
   </div>
 
   <!-- JavaScript Bootstrap -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
 
   <script src="/public/script.js"></script>
+
 </body>
 
 </html>

@@ -1,206 +1,320 @@
-
-function uploadImage() {
-    const input = document.getElementById('imageUpload');
-    const file = input.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const url = e.target.result;
-            const imageDropBox = document.getElementById('imageDropBox');
-            imageDropBox.innerHTML = `<img src="${url}" style="width: 100%; height: auto; max-height: 300px;">`; // Replace the contents
-        };
-        reader.readAsDataURL(file); // Converts the uploaded file into a data URL
-    } else {
-        alert('Please select an image file.');
-    }
-}
-
-// Upload and save imag to local storage
+// NOTE: CHECK RECOMMENDATION IN CHAT
 
 document.addEventListener('DOMContentLoaded', function () {
+    // Load saved image from local storage
     const savedImageURL = localStorage.getItem('uploadedImage');
     if (savedImageURL) {
         const imageDropBox = document.getElementById('imageDropBox');
         imageDropBox.innerHTML = `<img src="${savedImageURL}" style="width: 100%; height: auto; max-height: 300px;">`;
     }
-});
 
-document.getElementById('imageUpload').addEventListener('change', function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            const url = e.target.result;
-            localStorage.setItem('uploadedImage', url);  // Save the image in Local Storage
-
-            const imageDropBox = document.getElementById('imageDropBox');
-            imageDropBox.innerHTML = `<img src="${url}" style="width: 100%; height: auto; max-height: 300px;">`;
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-
-// Function to save pizza details to local storage
-function savePizzaDetails() {
-    const pizzaName = document.getElementById('pizzaName').value;
-    const pizzaDescription = document.getElementById('pizzaDescription').value;
-    const pizzaServing = document.getElementById('pizzaServing').value;
-  
-    const pizzaData = {
-      pizzaName,
-      pizzaDescription,
-      pizzaServing,
-    };
-  
-    localStorage.setItem('pizzaDetails', JSON.stringify(pizzaData));
-    alert('Pizza details saved!');
-  }
-  
-  // Function to load pizza details from local storage and display in modal
-  function loadPizzaDetails() {
-    const pizzaData = JSON.parse(localStorage.getItem('pizzaDetails'));
-  
-    if (pizzaData) {
-      document.getElementById('modalPizzaName').innerText = pizzaData.pizzaName;
-      document.getElementById('modalPizzaDescription').innerText = pizzaData.pizzaDescription;
-      document.getElementById('modalPizzaServing').innerText = pizzaData.pizzaServing;
-    } else {
-      alert('No pizza data found. Please add a pizza first.');
-    }
-  }
-  
-  // Event listener for viewing pizza details
-  document.querySelector('a[data-bs-target="#viewPizzaModal"]').addEventListener('click', loadPizzaDetails);
-
-  
-  
-// Input dropdown
-document.addEventListener('DOMContentLoaded', () => {
-    const navLinks = document.querySelectorAll('.nav .nav-link:not(.disabled)');
-    navLinks.forEach(link => {
-        link.addEventListener('click', function (event) {
-            event.preventDefault(); // Optional: prevent the link from following the URL
-            navLinks.forEach(l => l.classList.remove('active'));
-            this.classList.add('active');
-        });
-    });
-});
-
-// Toggle button for the crust type
-document.querySelectorAll('.btn-group .btn').forEach(button => {
-    button.addEventListener('click', function () {
-        let buttons = document.querySelectorAll('.btn-group .btn');
-        buttons.forEach(btn => btn.classList.remove('active'));
-        this.classList.add('active');
-    });
-});
-
-// Dropdown button for units
-document.addEventListener('DOMContentLoaded', function () {
-    var dropdownItems = document.querySelectorAll('.dropdown-item');
+    // Event listeners for dropdown items
+    const dropdownItems = document.querySelectorAll('.dropdown-item');
     dropdownItems.forEach(function (item) {
         item.addEventListener('click', function (e) {
-            e.preventDefault(); // Prevent the link from navigating.
+            e.preventDefault();
             var dropdownButton = this.closest('.input-group').querySelector('.btn.dropdown-toggle');
             dropdownButton.textContent = this.textContent;
         });
     });
+
+    // Event listener for crust type buttons
+    document.querySelectorAll('.btn-group .btn').forEach(button => {
+        button.addEventListener('click', function () {
+            document.querySelectorAll('.btn-group .btn').forEach(btn => btn.classList.remove('active'));
+            this.classList.add('active');
+        });
+    });
+
+    // Event listener for image upload
+    document.getElementById('imageUpload').addEventListener('change', function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const url = e.target.result;
+                localStorage.setItem('uploadedImage', url); // Save the image in Local Storage
+                const imageDropBox = document.getElementById('imageDropBox');
+                imageDropBox.innerHTML = `<img src="${url}" style="width: 100%; height: auto; max-height: 300px;">`;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    // Load ingredients from local storage
+    getIngredients();
+
+    // Display saved pizzas
+    displaySavedPizzas();
+
+    // Event listener for submit button
+    document.getElementById('submitButton').addEventListener('click', function () {
+        savePizzaDetails();
+        alert('Data is saved!');
+        console.log('Data is saved!')
+    });
+
+    // Event listener for close button
+    document.getElementById('closeButton').addEventListener('click', function () {
+        if (confirm('Do you really want to close without saving?')) {
+            $('#viewPizzaModal').modal('hide');
+        }
+    });
+
+
 });
 
+// Variables
+const ingredientInput = document.querySelector('.ingredient-input');
+const quantityInput = document.querySelector('.quantity-input');
+const ingredientBtn = document.querySelector('.ingredient-btn');
+const ingredientList = document.querySelector('.ingredient-list');
+let selectedUnit = '';
+let currentPizzaIndex = -1; // Track the index of the pizza being viewed/edited
 
-// Function to load ingredients from localStorage
-// Add event listener for DOMContentLoaded to load saved ingredients
-// document.addEventListener('DOMContentLoaded', function() {
-//     loadIngredients();
-// });
+// Event listeners
+ingredientBtn.addEventListener('click', addIngredient);
+ingredientList.addEventListener('click', deleteCheck);
 
-// Function to add a new ingredient field
-// function addField() {
-//     const container = document.getElementById('ingredientsContainer');
-//     const newField = document.createElement('div');
-//     newField.className = 'form-inline';
-//     newField.innerHTML = `
-//         <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Ingredient">
-//         <input type="number" class="form-control mb-2 mr-sm-2" placeholder="Quantity">
-//         <select class="form-control mb-2 mr-sm-2">
-//             <option value="grams">Grams</option>
-//             <option value="cups">Cups</option>
-//             <option value="ml">Milliliters</option>
-//         </select>
-//         <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
-//     `;
-//     container.appendChild(newField);
-//     saveIngredients();
-// }
+// Event listeners for dropdown items
+const dropdownItems = document.querySelectorAll('.dropdown-item');
+dropdownItems.forEach(function (item) {
+    item.addEventListener('click', function (e) {
+        e.preventDefault();
+        const dropdownButton = this.closest('.input-group').querySelector('.btn.dropdown-toggle');
+        dropdownButton.textContent = this.textContent;
+        selectedUnit = this.textContent;
+    });
+});
 
-// Function to remove an ingredient field
-// function removeField(element) {
-//     element.parentNode.remove();
-//     saveIngredients();
-// }
-let ingredientCount = 1;
+function addIngredient(event) {
+    event.preventDefault();
 
-function addField() {
-    ingredientCount++;
-    const container = document.getElementById('ingredientsContainer');
-    const newField = document.createElement('div');
-    newField.className = 'form-inline mb-3';
-    newField.innerHTML = `
-      <div class="input-group">
-        <input type="text" class="form-control-plaintext" id="ingredientName${ingredientCount}" placeholder="Enter ingredient name" style="border-bottom: 1px solid #ced4da;">
-      </div>
-      <div class="input-group">
-        <input type="number" class="form-control" id="amount${ingredientCount}" placeholder="Amount">
-        <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
-        <ul class="dropdown-menu">
-          <li><button class="dropdown-item" type="button">Grams</button></li>
-          <li><button class="dropdown-item" type="button">Ounces</button></li>
-          <li><button class="dropdown-item" type="button">Cups</button></li>
-        </ul>
-      </div>
-      <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
-    `;
-    container.appendChild(newField);
-  }
+    if (ingredientInput.value === '' || quantityInput.value === '' || selectedUnit === '') {
+        alert("You must complete all fields!");
+        return;
+    }
 
-  function removeField(element) {
-    element.parentNode.remove();
-  }
+    const ingredientDiv = document.createElement("div");
+    ingredientDiv.classList.add('ingredient', 'list-group-item');
 
-// Function to save ingredients to localStorage
-// function saveIngredients() {
-//     const ingredients = [];
-//     document.querySelectorAll('#ingredientsContainer .form-inline').forEach(div => {
-//         const ingredient = div.querySelector('input[type=text]').value;
-//         const quantity = div.querySelector('input[type=number]').value;
-//         const unit = div.querySelector('select').value;
-//         ingredients.push({ ingredient, quantity, unit });
-//     });
-//     localStorage.setItem('ingredients', JSON.stringify(ingredients));
-// }
+    const newIngredient = document.createElement('li');
+    newIngredient.innerText = `${ingredientInput.value} - ${quantityInput.value} ${selectedUnit}`;
+    newIngredient.classList.add('ingredient-item');
+    ingredientDiv.appendChild(newIngredient);
 
-// Function to load ingredients from localStorage
-// function loadIngredients() {
-//     const ingredients = JSON.parse(localStorage.getItem('ingredients'));
-//     if (ingredients) {
-//         const container = document.getElementById('ingredientsContainer');
-//         container.innerHTML = ''; // Clear existing fields
-//         ingredients.forEach(data => {
-//             const newField = document.createElement('div');
-//             newField.className = 'form-inline';
-//             newField.innerHTML = `
-//                 <input type="text" class="form-control mb-2 mr-sm-2" value="${data.ingredient}" placeholder="Ingredient">
-//                 <input type="number" class="form-control mb-2 mr-sm-2" value="${data.quantity}" placeholder="Quantity">
-//                 <select class="form-control mb-2 mr-sm-2">
-//                     <option value="grams" ${data.unit === 'grams' ? 'selected' : ''}>Grams</option>
-//                     <option value="cups" ${data.unit === 'cups' ? 'selected' : ''}>Cups</option>
-//                     <option value="ml" ${data.unit === 'ml' ? 'selected' : ''}>Milliliters</option>
-//                 </select>
-//                 <button type="button" class="btn btn-danger mb-2" onclick="removeField(this)">Remove</button>
-//             `;
-//             container.appendChild(newField);
-//         });
-//     }
-// }
+    saveLocal(ingredientInput.value, quantityInput.value, selectedUnit);
+
+    const checked = document.createElement('button');
+    checked.innerHTML = '<i class="fas fa-check"></i>';
+    checked.classList.add('check-btn', 'btn', 'btn-success', 'ml-2');
+    ingredientDiv.appendChild(checked);
+
+    const deleted = document.createElement('button');
+    deleted.innerHTML = '<i class="fas fa-trash"></i>';
+    deleted.classList.add('delete-btn', 'btn', 'btn-danger', 'ml-2');
+    ingredientDiv.appendChild(deleted);
+
+    ingredientList.appendChild(ingredientDiv);
+
+    ingredientInput.value = '';
+    quantityInput.value = '';
+    selectedUnit = '';
+    document.querySelector('.dropdown-toggle').innerText = 'Unit';
+}
+
+function deleteCheck(event) {
+    const item = event.target;
+
+    if (item.classList.contains('delete-btn')) {
+        item.parentElement.classList.add("fall");
+
+        removeLocalIngredients(item.parentElement);
+
+        item.parentElement.addEventListener('transitionend', function () {
+            item.parentElement.remove();
+        });
+    }
+
+    if (item.classList.contains('check-btn')) {
+        item.parentElement.classList.toggle("completed");
+    }
+}
+
+function saveLocal(ingredient, quantity, unit) {
+    let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    ingredients.push({ ingredient, quantity, unit });
+    localStorage.setItem('ingredients', JSON.stringify(ingredients));
+}
+
+function getIngredients() {
+    let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    ingredients.forEach(ingredientObj => {
+        const ingredientDiv = document.createElement("div");
+        ingredientDiv.classList.add("ingredient", "list-group-item");
+
+        const newIngredient = document.createElement('li');
+        newIngredient.innerText = `${ingredientObj.ingredient} - ${ingredientObj.quantity} ${ingredientObj.unit}`;
+        newIngredient.classList.add('ingredient-item');
+        ingredientDiv.appendChild(newIngredient);
+
+        const checked = document.createElement('button');
+        checked.innerHTML = '<i class="fas fa-check"></i>';
+        checked.classList.add("check-btn", 'btn', 'btn-success', 'ml-2');
+        ingredientDiv.appendChild(checked);
+
+        const deleted = document.createElement('button');
+        deleted.innerHTML = '<i class="fas fa-trash"></i>';
+        deleted.classList.add("delete-btn", 'btn', 'btn-danger', 'ml-2');
+        ingredientDiv.appendChild(deleted);
+
+        ingredientList.appendChild(ingredientDiv);
+    });
+}
+
+function removeLocalIngredients(ingredient) {
+    let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    const ingredientText = ingredient.children[0].innerText;
+    const ingredientIndex = ingredients.findIndex(item => `${item.ingredient} - ${item.quantity} ${item.unit}` === ingredientText);
+    ingredients.splice(ingredientIndex, 1);
+    localStorage.setItem('ingredients', JSON.stringify(ingredients));
+}
+
+
+function savePizzaDetails() {
+    const pizzaName = document.getElementById('pizzaName').value;
+    const pizzaDescription = document.getElementById('pizzaDescription').value;
+    const pizzaServing = document.getElementById('pizzaServing').value;
+    const ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
+    const imageUrl = localStorage.getItem('uploadedImage');
+
+    const pizzaData = {
+        pizzaName,
+        pizzaDescription,
+        pizzaServing,
+        ingredients,
+        imageUrl
+    };
+
+    let pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
+    pizzas.push(pizzaData);
+    localStorage.setItem('pizzas', JSON.stringify(pizzas));
+    alert('Pizza details saved!');
+
+    displaySavedPizzas();
+}
+
+
+function displaySavedPizzas() {
+    const cardsContainer = document.getElementById('cardsContainer');
+    if (!cardsContainer) {
+        console.error('Element with ID "cardsContainer" not found.');
+        return;
+    }
+    cardsContainer.innerHTML = '';
+    const pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
+
+    pizzas.forEach((pizza, index) => {
+        const card = document.createElement('div');
+        card.classList.add('col-sm-4', 'mb-3');
+        const imageUrl = pizza.imageUrl || 'default-image.jpg'; // Use default image if imageUrl is empty
+        card.innerHTML = `
+            <div class="card">
+                <div class="card-body">
+                    <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
+                    <h5 class="card-title">${pizza.pizzaName}</h5>
+                    <p class="card-text">${pizza.pizzaDescription}</p>
+                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
+                </div>
+            </div>
+        `;
+        cardsContainer.appendChild(card);
+    });
+}
+
+
+function loadPizzaDetails(index) {
+    const pizzas = JSON.parse(localStorage.getItem('pizzas'));
+    const pizza = pizzas[index];
+    currentPizzaIndex = index;
+
+    if (pizza) {
+        const modalContent = `
+        <div class="modal fade" id="viewPizzaModal" tabindex="-1" aria-labelledby="viewPizzaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h3 id="modalPizzaName">${pizza.pizzaName}</h3>
+                    <p id="modalPizzaDescription">${pizza.pizzaDescription}</p>
+                            <p id="modalPizzaDescription">${pizza.pizzaDescription}</p>
+                            <p><strong>Serving Size:</strong> <span id="modalPizzaServing">${pizza.pizzaServing}</span></p>
+                            <h5>Ingredients:</h5>
+                            <ul id="modalPizzaIngredients">
+                                ${pizza.ingredients.map(ingredient => `<li>${ingredient.ingredient} - ${ingredient.quantity} ${ingredient.unit}</li>`).join('')}
+                            </ul>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" class="btn btn-primary" id="editButton" onclick="editPizzaDetails()">Edit</button>
+                            <button type="button" class="btn btn-danger" id="deleteButton" onclick="deletePizzaDetails()">Delete</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `;
+        createAndShowModal(modalContent);
+    }
+}
+
+
+
+function editPizzaDetails() {
+    const pizzas = JSON.parse(localStorage.getItem('pizzas'));
+    const pizza = pizzas[currentPizzaIndex];
+
+    if (pizza) {
+        document.getElementById('pizzaName').value = pizza.pizzaName;
+        document.getElementById('pizzaDescription').value = pizza.pizzaDescription;
+        document.getElementById('pizzaServing').value = pizza.pizzaServing;
+        localStorage.setItem('ingredients', JSON.stringify(pizza.ingredients));
+        $('#fullscreenModal').modal('show');
+    }
+}
+
+function deletePizzaDetails() {
+    const pizzas = JSON.parse(localStorage.getItem('pizzas'));
+
+    if (currentPizzaIndex > -1) {
+        pizzas.splice(currentPizzaIndex, 1);
+        localStorage.setItem('pizzas', JSON.stringify(pizzas));
+        alert('Pizza deleted!');
+        displaySavedPizzas();
+        $('#viewPizzaModal').modal('hide');
+    }
+}
+
+
+function createAndShowModal(modalContent) {
+    // Create a new div for the modal
+    var modalDiv = document.createElement('div');
+    modalDiv.setAttribute("id", "partialView");
+
+    // Set the inner HTML to the provided modal content
+    modalDiv.innerHTML = modalContent;
+
+    // Append the modal to the body
+    document.body.appendChild(modalDiv);
+
+    // Remove the modal from the DOM when it's hidden
+    $(modalDiv).find("#viewPizzaModal").on('hidden.bs.modal', function () {
+        $(this).remove();
+    });
+
+    // Show the modal
+    $(modalDiv).find("#viewPizzaModal").modal('show');
+}
 
