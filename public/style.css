@@ -11,6 +11,10 @@
   color: #666;
 }
 
+.modal-footer .btn {
+  margin-right: 5px;
+}
+
 /* .container {
   background-color: #fff;
   padding: 20px;

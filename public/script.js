@@ -1,3 +1,5 @@
+// NOTE: SHARE FUCNTION DONT WORK
+
 document.addEventListener('DOMContentLoaded', function () {
     let cropper;
     const imageUpload = document.getElementById('imageUpload');
@@ -5,46 +7,47 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
     const imagePreview = document.getElementById('imagePreview');
     const cropButton = document.getElementById('cropButton');
-  
+
     // Event listener for image upload
     imageUpload.addEventListener('change', function () {
-      const file = this.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-          imagePreview.src = e.target.result;
-          imagePreviewContainer.style.display = 'block';
-          imageDropBox.style.display = 'none';
-  
-          // Initialize Cropper.js
-          if (cropper) {
-            cropper.destroy();
-          }
-          cropper = new Cropper(imagePreview, {
-            aspectRatio: 2 / 1,
-            viewMode: 1,
-            autoCropArea: 1,
-            responsive: true,
-            background: false,
-          });
-        };
-        reader.readAsDataURL(file);
-      }
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                imagePreview.src = e.target.result;
+                imagePreviewContainer.style.display = 'block';
+                imageDropBox.style.display = 'none';
+
+                // Initialize Cropper.js
+                if (cropper) {
+                    cropper.destroy();
+                }
+                cropper = new Cropper(imagePreview, {
+                    aspectRatio: 2 / 1,
+                    viewMode: 1,
+                    autoCropArea: 1,
+                    responsive: true,
+                    background: false,
+                });
+            };
+            reader.readAsDataURL(file);
+        }
     });
-  
+
     // Event listener for crop button
     cropButton.addEventListener('click', function () {
-      if (cropper) {
-        const canvas = cropper.getCroppedCanvas();
-        const url = canvas.toDataURL('image/jpeg');
-        localStorage.setItem('uploadedImage', url); // Save the cropped image in Local Storage
-        imageDropBox.innerHTML = `<img src="${url}" style="width: 100%; height: auto; max-height: 300px;">`;
-        imagePreviewContainer.style.display = 'none';
-        imageDropBox.style.display = 'inline-flex';
-      }
+        if (cropper) {
+            const canvas = cropper.getCroppedCanvas();
+            const url = canvas.toDataURL('image/jpeg');
+            localStorage.setItem('uploadedImage', url); // Save the cropped image in Local Storage
+            imageDropBox.innerHTML = `<img src="${url}" style="width: 100%; height: auto; max-height: 300px;">`;
+            imagePreviewContainer.style.display = 'none';
+            imageDropBox.style.display = 'inline-flex';
+        }
     });
-  });
-  
+
+});
+
 
 document.addEventListener('DOMContentLoaded', function () {
     // Load saved image from local storage
@@ -107,6 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Display all pizzas by default
     showAllPizzas();
+
 });
 
 // Variables
@@ -286,33 +290,6 @@ function savePizzaDetails() {
     displaySavedPizzas();
 }
 
-// function displaySavedPizzas() {
-//     const cardsContainer = document.getElementById('cardsContainer');
-//     if (!cardsContainer) {
-//         console.error('Element with ID "cardsContainer" not found.');
-//         return;
-//     }
-//     cardsContainer.innerHTML = '';
-//     const pizzas = JSON.parse(localStorage.getItem('pizzas')) || [];
-
-//     pizzas.forEach((pizza, index) => {
-//         const card = document.createElement('div');
-//         card.classList.add('col-sm-4', 'mb-3');
-//         const imageUrl = pizza.imageUrl || 'default-image.jpg'; // Use default image if imageUrl is empty
-//         card.innerHTML = `
-//             <div class="card">
-//                 <div class="card-body">
-//                     <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
-//                     <h5 class="card-title">${pizza.pizzaName}</h5>
-//                     <p class="card-text">${pizza.pizzaDescription}</p>
-//                     <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
-//                 </div>
-//             </div>
-//         `;
-//         cardsContainer.appendChild(card);
-//     });
-// }
-
 function loadPizzaDetails(index) {
     const pizzas = JSON.parse(localStorage.getItem('pizzas'));
     const pizza = pizzas[index];
@@ -362,6 +339,7 @@ function loadPizzaDetails(index) {
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="editButton" onclick="editPizzaDetails()">Edit</button>
                         <button type="button" class="btn btn-danger" id="deleteButton" onclick="deletePizzaDetails()">Delete</button>
+                        <button type="button" class="btn btn-success" id="shareButton" onclick="shareRecipe()">Share</button>
                     </div>
                 </div>
             </div>
@@ -538,3 +516,58 @@ function displayFavoritePizzas() {
 document.addEventListener('DOMContentLoaded', function () {
     showAllPizzas();
 });
+
+
+function shareRecipe() {
+    const pizzaName = document.getElementById('modalPizzaName')?.textContent || 'No Name';
+    const pizzaDescription = document.getElementById('modalPizzaDescription')?.textContent || 'No Description';
+    const pizzaServing = document.getElementById('modalPizzaServing')?.textContent || 'No Serving Size';
+    const baseIngredientsList = document.getElementById('modalBaseIngredients')?.innerText || 'No Base Ingredients';
+    const toppingsList = document.getElementById('modalPizzaIngredients')?.innerText || 'No Toppings';
+    const crustType = document.getElementById('modalPizzaCrustType')?.textContent || 'No Crust Type';
+    const instructionsBase = document.getElementById('modalPizzaInstructionsBase')?.textContent || 'No Base Instructions';
+    const instructionsToppings = document.getElementById('modalPizzaInstructionsToppings')?.textContent || 'No Toppings Instructions';
+    const instructionsBaking = document.getElementById('modalPizzaInstructionsBaking')?.textContent || 'No Baking Instructions';
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    let y = 10;
+
+    doc.setFontSize(16);
+    doc.text(`Pizza Recipe: ${pizzaName}`, 10, y);
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(`Description: ${pizzaDescription}`, 10, y);
+    y += 10;
+    doc.text(`Serving Size: ${pizzaServing}`, 10, y);
+    y += 10;
+    doc.text(`Crust Type: ${crustType}`, 10, y);
+    y += 10;
+
+    doc.setFontSize(14);
+    doc.text('Base Ingredients:', 10, y);
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(baseIngredientsList, 10, y);
+    y += 10 + baseIngredientsList.split('\n').length * 10;
+
+    doc.setFontSize(14);
+    doc.text('Toppings:', 10, y);
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(toppingsList, 10, y);
+    y += 10 + toppingsList.split('\n').length * 10;
+
+    doc.setFontSize(14);
+    doc.text('Instructions:', 10, y);
+    y += 10;
+    doc.setFontSize(12);
+    doc.text(`Base: ${instructionsBase}`, 10, y);
+    y += 10 + instructionsBase.split('\n').length * 10;
+    doc.text(`Toppings: ${instructionsToppings}`, 10, y);
+    y += 10 + instructionsToppings.split('\n').length * 10;
+    doc.text(`Baking: ${instructionsBaking}`, 10, y);
+
+    doc.save(`${pizzaName}_Recipe.pdf`);
+}
