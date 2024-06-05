@@ -6,7 +6,6 @@
   <meta name="viewport" content="width=device-width">
   <title>repl.it</title>
   <!-- <link href="/scss/main.scss" rel="stylesheet" type="text/css" /> -->
-
   <!-- CSS Bootstrap -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
@@ -17,9 +16,13 @@
 
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3 fixed-top">
+  <nav class="navbar navbar-expand-lg navbar-light bg-white py-3 fixed-top">
     <div class="container">
-      <a href="#" class="navbar-brand">PIZZALYTICS</a>
+
+      <!-- Add Pizza Button -->
+      <button id="addPizza" class="btn" type="button" data-bs-toggle="modal" data-bs-target="#fullscreenModal">
+        Add New Pizza
+      </button>
 
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navmenu">
         <span class="navbar-toggler-icon"></span>
@@ -27,16 +30,15 @@
 
       <div class="collapse navbar-collapse" id="navmenu">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a href="#Showcase" class="nav-link">Explore</a>
-          </li>
-          <li class="nav-item">
-            <a href="#questions" class="nav-link">Saved Recipes</a>
-          </li>
 
-          <!-- CHECK THIS!!!! -->
           <li class="nav-item">
-            <a href="#instructors" class="nav-link">Log in</a>
+            <a href="#" class="nav-link">Explore</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">Saved Recipes</a>
+          </li>
+          <li class="nav-item">
+            <a href="#" class="nav-link">Log in</a>
           </li>
 
         </ul>
@@ -44,8 +46,15 @@
     </div>
   </nav>
 
+  <div>
+    <h1 id="mainHeading"> PIZZALYTICS </h1>
+  </div>
+
+
+
   <!-- Showcase -->
   <div id="carouselExampleCaptions" class="carousel slide">
+
     <div class="carousel-indicators">
       <button type="button" data-bs-target="#carouselExampleCaptions" data-bs-slide-to="0" class="active"
         aria-current="true" aria-label="Slide 1"></button>
@@ -55,37 +64,29 @@
         aria-label="Slide 3"></button>
     </div>
     <div class="carousel-inner">
-      <div class="carousel-item active">
-        <div style="width: max; height: 500px; overflow: hidden;">
-          <img src="/public/images/Pizza-Dough-Making.jpeg" class="d-block w-100" alt="first-img">
-        </div>
 
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Craft Your Perfect Pizza</h5>
-          <p>Dive into a world of endless possibilities with our customizable pizza builder. From the classic Margherita
-            to your own unique creation, the choice is yours!.</p>
+      <div class="carousel-item active">
+        <img src="/public/images/Pizza-Dough-Making.jpeg" class="d-block w-100" alt="first-img">
+        <div class="carousel-caption d-md-block">
+          <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Craft Your Perfect Pizza"
+            data-bs-content="Dive into a world of endless possibilities with our customizable pizza builder. From the classic Margherita to your own unique creation, the choice is yours!">Info</button>
         </div>
       </div>
       <div class="carousel-item">
-        <div style="width: max; height: 500px; overflow: hidden;">
-          <img
-            src="/public/images/ai-generated-making-vegan-pizza-pizza-with-tomato-cheese-and-basil-dark-background-generated-by-artificial-intelligence-free-photo.jpeg"
-            class="d-block w-100" alt="first-img">
-        </div>
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Discover New Flavors</h5>
-          <p>Explore a variety of delicious recipes curated by pizza enthusiasts from around the globe. Try something
-            new and tantalize your taste buds with every slice!</p>
+        <img
+          src="/public/images/ai-generated-making-vegan-pizza-pizza-with-tomato-cheese-and-basil-dark-background-generated-by-artificial-intelligence-free-photo.jpeg"
+          class="d-block w-100" alt="second-img">
+        <div class="carousel-caption d-md-block">
+          <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover" title="Discover New Flavors"
+            data-bs-content="Explore a variety of delicious recipes curated by pizza enthusiasts from around the globe. Try something new and tantalize your taste buds with every slice!">Info</button>
         </div>
       </div>
       <div class="carousel-item">
-        <div style="width: max; height: 500px; overflow: hidden;">
-          <img src="/public/images/homemade-pizza-dough.jpeg" class="d-block w-100" alt="first-img">
-        </div>
-        <div class="carousel-caption d-none d-md-block">
-          <h5>Save and Share Your Masterpieces</h5>
-          <p>Easily save your favorite pizza recipes and share them with friends and family. Show off your culinary
-            skills and inspire others to join the pizza-making adventure!</p>
+        <img src="/public/images/homemade-pizza-dough.jpeg" class="d-block w-100" alt="third-img">
+        <div class="carousel-caption d-md-block">
+          <button type="button" class="btn btn-lg btn-danger" data-bs-toggle="popover"
+            title="Save and Share Your Masterpieces"
+            data-bs-content="Easily save your favorite pizza recipes and share them with friends and family. Show off your culinary skills and inspire others to join the pizza-making adventure!">Info</button>
         </div>
       </div>
     </div>
@@ -100,19 +101,13 @@
   </div>
 
 
-  <!-- Button to trigger modal -->
-  <button class="btn btn-primary" type="button" data-bs-toggle="modal" data-bs-target="#fullscreenModal">
-    Add New Pizza
-  </button>
-
   <!-- Fullscreen Modal -->
   <div class="modal fade" id="fullscreenModal" tabindex="-1" aria-labelledby="fullscreenModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">">
       <div class="modal-content">
 
-        <div class="modal-header">
+        <div id="formHeader" class="modal-header">
           <h5 class="modal-title" id="fullscreenModalLabel">Add New Pizza</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
 
         <div class="modal-body">
@@ -121,8 +116,7 @@
             <div class="mb-3">
               <label for="imageUpload" class="form-label" style="display: block">Upload your image</label>
               <input class="form-control" type="file" id="imageUpload" accept="image/*" style="display: none;">
-              <div id="imageDropBox" onclick="document.getElementById('imageUpload').click()"
-                style="width: 600px; height: 300px; border: 2px dashed #ccc; display: inline-flex; align-items: center; justify-content: center; cursor: pointer;">
+              <div id="imageDropBox" onclick="document.getElementById('imageUpload').click()">
                 <span>Drag and drop an image here or click to select a file.</span>
               </div>
               <!-- Image preview container -->
@@ -135,15 +129,23 @@
           </div>
 
           <!-- Form inputs for pizza details -->
-          <div class="mb-3">
-            <label for="pizzaName" class="form-label">Pizza Name</label>
-            <input type="text" class="form-control" id="pizzaName" placeholder="Enter pizza name" required>
-          </div>
+
+          <form class="was-validated">
+            <div class="mb-3">
+              <label for="pizzaName" class="form-label">Pizza Name</label>
+              <input type="text" class="form-control" id="pizzaName" placeholder="Enter pizza name" required>
+              <div class="invalid-feedback">
+                Please enter a message in the textarea.
+              </div>
+            </div>
+          </form>
+
 
           <!-- Description -->
           <div class="mb-3">
             <label for="pizzaDescription" class="form-label">Description</label>
-            <textarea class="form-control" id="pizzaDescription" rows="3" required></textarea>
+            <textarea class="form-control" id="pizzaDescription" rows="3" placeholder="A gluten-free pizza..."
+              required></textarea>
           </div>
 
 
@@ -159,7 +161,6 @@
           </div>
 
           <div class="mb-3">
-            <!-- <label for="pizzaIngredients" class="form-label">Ingredient Input</label> -->
             <p class="form-label">Ingredient Input</p>
             <!-- Ingredients -->
             <div class="accordion">
@@ -174,6 +175,17 @@
                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
                   <div class="accordion-body">
                     <!-- BASE -->
+
+                    <!-- Crust Type -->
+                    <div class="btn-group" role="group" aria-label="Crust Type">
+                      <p id="crustTypeTitle" class="form-label">Crust Type (Required to save Pizza)</p>
+                      <div id="crustOptions">
+                        <button type="button" class="btn btn-outline-secondary">Thin Crust</button>
+                        <button type="button" class="btn btn-outline-secondary">Medium Crust</button>
+                        <button type="button" class="btn btn-outline-secondary">Thick Crust</button>
+                      </div>
+                    </div>
+
                     <!-- Flour -->
                     <div class="form-group mb-3">
                       <label for="flourAmount" class="form-label">Flour</label>
@@ -191,7 +203,7 @@
                     </div>
 
                     <!-- Yeast -->
-                    <div class="mb-3">
+                    <div class="form-group mb-3">
                       <label for="yeastAmount" class="form-label">Yeast</label>
                       <div class="input-group">
                         <input type="number" class="form-control" id="yeastAmount" placeholder="Amount">
@@ -258,33 +270,16 @@
                       <div class="input-group mt-2">
                         <input type="text" class="form-control" id="otherIngredients" aria-label="Other Ingredients"
                           placeholder="Separate by commas (e.g. Mixed flour 400G)">
-                        <!-- <div class="input-group mt-2"> -->
-                        <!-- <button class="btn btn-outline-secondary dropdown-toggle" type="button"
-                          data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
-                        <ul class="dropdown-menu">
-                          <li><button class="dropdown-item" type="button">Grams</button></li>
-                          <li><button class="dropdown-item" type="button">Once</button></li>
-                          <li><button class="dropdown-item" type="button">Ml</button></li>
-                          <li><button class="dropdown-item" type="button">Cups</button></li>
-                        </ul> -->
                       </div>
                     </div>
 
 
-
-                    <!-- Crust Type -->
-                    <div class="btn-group" role="group" aria-label="Crust Type">
-                      <p class="form-label">Crust Type</p>
-                      <button type="button" class="btn btn-outline-secondary">Thin Crust</button>
-                      <button type="button" class="btn btn-outline-secondary">Medium Crust</button>
-                      <button type="button" class="btn btn-outline-secondary">Thick Crust</button>
-                    </div>
                   </div>
                 </div>
               </div>
               <!-- </div> -->
 
-              <!-- TOPPINGS 1 -->
+              <!-- TOPPINGS -->
               <div class="accordion-item" id="pizzaToppings">
                 <h2 class="accordion-header">
                   <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -304,7 +299,6 @@
                         <input class="quantity-input form-control mr-2" type="number" placeholder="Quantity"
                           id="quantityInput">
 
-
                         <div class="input-group">
                           <button class="btn btn-outline-secondary dropdown-toggle" type="button"
                             data-bs-toggle="dropdown" aria-expanded="false">Unit</button>
@@ -316,11 +310,11 @@
                           </ul>
                         </div>
 
-
-                        <button class="ingredient-btn btn btn-primary ml-2" type="submit">Add Topping</button>
+                        <button id="addToppings" class="ingredient-btn btn btn-primary ml-2" type="submit">Add
+                          Topping</button>
                       </form>
                     </div>
-                    <ul class="ingredient-list list-group container mt-4"></ul>
+                    <ul id="ingredientDisplay" class="ingredient-list list-group container mt-4"></ul>
                   </div>
                 </div>
               </div>
@@ -345,6 +339,8 @@
                     </div>
                   </div>
 
+                  <hr>
+
                   <div class="accordion-body">
                     <div class="mb-3">
                       <label for="toppingsInstructions" class="form-label">Toppings Instructions</label>
@@ -355,6 +351,8 @@
                       <input type="text" class="form-control" id="toppingsDuration" placeholder="20min">
                     </div>
                   </div>
+
+                  <hr>
 
                   <div class="accordion-body">
                     <div class="mb-3">
@@ -385,14 +383,14 @@
 
 
   <!-- Carousel -->
-  <div class="card text-center">
+  <div id="navBox">
     <div class="card-header">
       <ul class="nav nav-tabs card-header-tabs">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="true" href="#" onclick="showAllPizzas()">All</a>
+          <a class="nav-link active" aria-current="true" onclick="showAllPizzas(this)">All</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="#" onclick="showFavoritePizzas()">Favorites</a>
+          <a class="nav-link" onclick="showFavoritePizzas(this)">Favorites</a>
         </li>
       </ul>
     </div>
@@ -413,83 +411,32 @@
               <img src="/public/images/placeholder.png" class="img-fluid" alt="Pizza Image" id="pizzaCardImage">
               <h5 class="card-title" id="pizzaCardTitle">Pizza Name</h5>
               <p class="card-text" id="pizzaCardDescription">Pizza Description</p>
-              <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal"
+              <a id="viewPizzaButton" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal"
                 onclick="loadPizzaDetails()">View Pizza</a>
             </div>
           </div>
         </div>
 
-        <!-- View Pizza Modal -->
-        <div class="modal fade" id="viewPizzaModal" tabindex="-1" aria-labelledby="viewPizzaModalLabel"
-          aria-hidden="true">
-          <div class="modal-dialog modal-xl">
-            <div class="modal-content">
-              <div class="modal-header">
-                <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-              </div>
-              <div class="modal-body">
-                <h3 id="modalPizzaName"></h3>
-                <p id="modalPizzaDescription"></p>
-                <p><strong>Serving Size:</strong> <span id="modalPizzaServing"></span></p>
-                <h5>Ingredients:</h5>
-                <ul id="modalPizzaIngredients"></ul>
-                <h5>Crust Type:</h5>
-                <p id="modalPizzaCrustType"></p>
-                <h5>Instructions:</h5>
-                <h6>Base</h6>
-                <p id="modalBaseInstructions"></p>
-                <p><strong>Duration:</strong> <span id="modalBaseDuration"></span></p>
-                <h6>Toppings</h6>
-                <p id="modalToppingsInstructions"></p>
-                <p><strong>Duration:</strong> <span id="modalToppingsDuration"></span></p>
-                <h6>Baking</h6>
-                <p id="modalBakingInstructions"></p>
-                <p><strong>Duration:</strong> <span id="modalBakingDuration"></span></p>
-              </div>
-              <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="editButton" onclick="editPizzaDetails()">Edit</button>
-                <button type="button" class="btn btn-danger" id="deleteButton"
-                  onclick="deletePizzaDetails()">Delete</button>
-                <button type="button" class="btn btn-secondary" id="shareButton" onclick="shareRecipe()">Share</button>
-
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   </div>
   </div>
 
+
   <!-- Footer -->
   <footer class="bg-dark text-white text-center text-lg-start">
     <div class="container p-4">
       <div class="row">
+        <h5 class="text-uppercase">Pizzalytics</h5>
         <!-- About -->
         <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-          <h5 class="text-uppercase">Pizzalytics</h5>
+          <!-- <h5 class="text-uppercase">Pizzalytics</h5> -->
           <ul class="list-unstyled mb-0">
             <li><a href="#!" class="text-white">Privacy Policy</a></li>
             <li><a href="#!" class="text-white">Terms & Condition</a></li>
             <li><a href="#!" class="text-white">About</a></li>
           </ul>
         </div>
-
-
-
-        <!-- Contact -->
-        <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
-          <!-- <h5 class="text-uppercase">Contact</h5>
-          <ul class="list-unstyled mb-0">
-            <li><i class="fas fa-home me-2"></i> 1234 Street, City, State</li>
-            <li><i class="fas fa-envelope me-2"></i> email@example.com</li>
-            <li><i class="fas fa-phone me-2"></i> +1 234 567 890</li>
-            <li><i class="fas fa-print me-2"></i> +1 234 567 891</li>
-          </ul> -->
-        </div>
-
 
         <!-- Links -->
         <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
@@ -500,26 +447,30 @@
           </ul>
         </div>
 
-        <div class="mb-3">
-          <label for="exampleFormControlInput1" class="form-label">Weekly Newsletter</label>
-          <div>
-            <input type="email" class="form-control" id="exampleFormControlInput1" placeholder="name@example.com">
-            <button type="submit" class="btn btn-primary mb-3">Confirm</button>
-          </div>
+        <!-- Empty -->
+        <div class="col-lg-4 col-md-6 mb-4 mb-md-0">
+          <!-- <div class="col-lg-12 text-center mt-4"> -->
+          <p class="text-uppercase">Weekly Newsletter</p>
+          <form class="newsletter-form">
+            <input type="email" class="form-control d-inline-block" id="emailInput" placeholder="Email">
+            <button type="submit" class="btn btn-primary mb-3">Subscribe</button>
+          </form>
+          <!-- </div> -->
         </div>
 
       </div>
     </div>
-
-
   </footer>
 
 
-  <!-- JavaScript Bootstrap -->
+  
   <!-- Include jsPDF library -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+  
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  
+  <!-- JavaScript Bootstrap -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>

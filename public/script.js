@@ -1,5 +1,3 @@
-// NOTE: SHARE FUCNTION DONT WORK
-
 document.addEventListener('DOMContentLoaded', function () {
     let cropper;
     const imageUpload = document.getElementById('imageUpload');
@@ -7,6 +5,12 @@ document.addEventListener('DOMContentLoaded', function () {
     const imagePreviewContainer = document.getElementById('imagePreviewContainer');
     const imagePreview = document.getElementById('imagePreview');
     const cropButton = document.getElementById('cropButton');
+
+    // Initialize Bootstrap popovers
+    const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'))
+    const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+        return new bootstrap.Popover(popoverTriggerEl)
+    })
 
     // Event listener for image upload
     imageUpload.addEventListener('change', function () {
@@ -108,9 +112,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    // Display all pizzas by default
-    showAllPizzas();
-
 });
 
 // Variables
@@ -136,6 +137,7 @@ dropdownItems.forEach(function (item) {
     });
 });
 
+
 function addIngredient(event) {
     event.preventDefault();
 
@@ -147,23 +149,30 @@ function addIngredient(event) {
     const ingredientDiv = document.createElement("div");
     ingredientDiv.classList.add('ingredient', 'list-group-item');
 
+    // Create a container div for the text and button
+    const textButtonContainer = document.createElement("div");
+    textButtonContainer.style.display = 'flex';
+    textButtonContainer.style.alignItems = 'center';
+    textButtonContainer.style.justifyContent = 'space-between';
+
     const newIngredient = document.createElement('li');
     newIngredient.innerText = `${ingredientInput.value} - ${quantityInput.value} ${selectedUnit}`;
     newIngredient.classList.add('ingredient-item');
-    ingredientDiv.appendChild(newIngredient);
+    textButtonContainer.appendChild(newIngredient);
 
     saveLocal(ingredientInput.value, quantityInput.value, selectedUnit);
 
-    const checked = document.createElement('button');
-    checked.innerHTML = '<i class="fas fa-check"></i>';
-    checked.classList.add('check-btn', 'btn', 'btn-success', 'ml-2');
-    ingredientDiv.appendChild(checked);
+    // const checked = document.createElement('button');
+    // checked.innerHTML = '<i class="fas fa-check"></i>';
+    // checked.classList.add('check-btn', 'btn', 'btn-success', 'ml-2');
+    // textButtonContainer.appendChild(checked);
 
     const deleted = document.createElement('button');
-    deleted.innerHTML = '<i class="fas fa-trash"></i>';
+    deleted.innerHTML = '<i class="fas fa-trash"></i> X';
     deleted.classList.add('delete-btn', 'btn', 'btn-danger', 'ml-2');
-    ingredientDiv.appendChild(deleted);
+    textButtonContainer.appendChild(deleted);
 
+    ingredientDiv.appendChild(textButtonContainer);
     ingredientList.appendChild(ingredientDiv);
 
     ingredientInput.value = '';
@@ -172,16 +181,18 @@ function addIngredient(event) {
     document.querySelector('.dropdown-toggle').innerText = 'Unit';
 }
 
+
 function deleteCheck(event) {
     const item = event.target;
 
     if (item.classList.contains('delete-btn')) {
-        item.parentElement.classList.add("fall");
+        const ingredientDiv = item.closest('.ingredient'); // Select the closest parent with the 'ingredient' class
+        ingredientDiv.classList.add("fall");
 
-        removeLocalIngredients(item.parentElement);
+        removeLocalIngredients(ingredientDiv);
 
-        item.parentElement.addEventListener('transitionend', function () {
-            item.parentElement.remove();
+        ingredientDiv.addEventListener('transitionend', function () {
+            ingredientDiv.remove();
         });
     }
 
@@ -190,11 +201,13 @@ function deleteCheck(event) {
     }
 }
 
+
 function saveLocal(ingredient, quantity, unit) {
     let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
     ingredients.push({ ingredient, quantity, unit });
     localStorage.setItem('ingredients', JSON.stringify(ingredients));
 }
+
 
 function getIngredients() {
     let ingredients = JSON.parse(localStorage.getItem('ingredients')) || [];
@@ -202,21 +215,28 @@ function getIngredients() {
         const ingredientDiv = document.createElement("div");
         ingredientDiv.classList.add("ingredient", "list-group-item");
 
+        // Create a container div for the text and button
+        const textButtonContainer = document.createElement("div");
+        textButtonContainer.style.display = 'flex';
+        textButtonContainer.style.alignItems = 'center';
+        textButtonContainer.style.justifyContent = 'space-between';
+
         const newIngredient = document.createElement('li');
         newIngredient.innerText = `${ingredientObj.ingredient} - ${ingredientObj.quantity} ${ingredientObj.unit}`;
         newIngredient.classList.add('ingredient-item');
-        ingredientDiv.appendChild(newIngredient);
+        textButtonContainer.appendChild(newIngredient);
 
-        const checked = document.createElement('button');
-        checked.innerHTML = '<i class="fas fa-check"></i>';
-        checked.classList.add("check-btn", 'btn', 'btn-success', 'ml-2');
-        ingredientDiv.appendChild(checked);
+        // const checked = document.createElement('button');
+        // checked.innerHTML = '<i class="fas fa-check"></i>';
+        // checked.classList.add("check-btn", 'btn', 'btn-success', 'ml-2');
+        // textButtonContainer.appendChild(checked);
 
         const deleted = document.createElement('button');
-        deleted.innerHTML = '<i class="fas fa-trash"></i>';
+        deleted.innerHTML = '<i class="fas fa-trash"></i> X';
         deleted.classList.add("delete-btn", 'btn', 'btn-danger', 'ml-2');
-        ingredientDiv.appendChild(deleted);
+        textButtonContainer.appendChild(deleted);
 
+        ingredientDiv.appendChild(textButtonContainer);
         ingredientList.appendChild(ingredientDiv);
     });
 }
@@ -309,7 +329,7 @@ function loadPizzaDetails(index) {
                         <h5 class="modal-title" id="viewPizzaModalLabel">Pizza Details</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div id="displayModal" class="modal-body">
                         <h3 id="modalPizzaName">${pizza.pizzaName}</h3>
                         <p id="modalPizzaDescription">${pizza.pizzaDescription}</p>
                         <p><strong>Serving Size:</strong> <span id="modalPizzaServing">${pizza.pizzaServing}</span></p>
@@ -336,10 +356,10 @@ function loadPizzaDetails(index) {
                         <p><strong>Duration:</strong> ${pizza.instructions.baking.duration}</p>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeButton">Close</button>
                         <button type="button" class="btn btn-primary" id="editButton" onclick="editPizzaDetails()">Edit</button>
-                        <button type="button" class="btn btn-danger" id="deleteButton" onclick="deletePizzaDetails()">Delete</button>
                         <button type="button" class="btn btn-success" id="shareButton" onclick="shareRecipe()">Share</button>
+                        <button type="button" class="btn btn-danger" id="deleteButton" onclick="deletePizzaDetails()">Delete</button>
                     </div>
                 </div>
             </div>
@@ -431,15 +451,24 @@ function createAndShowModal(modalContent) {
 
 
 // Function to show all pizzas
-function showAllPizzas() {
+function showAllPizzas(element) {
     document.getElementById('cardsContainer').innerHTML = '';
     displaySavedPizzas();
+    switchActiveTab(element);
 }
 
 // Function to show favorite pizzas
-function showFavoritePizzas() {
+function showFavoritePizzas(element) {
     document.getElementById('cardsContainer').innerHTML = '';
     displayFavoritePizzas();
+    switchActiveTab(element);
+}
+
+function switchActiveTab(element) {
+    // Remove 'active' class from all nav links
+    document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+    // Add 'active' class to the clicked nav link
+    element.classList.add('active');
 }
 
 // Function to toggle favorite status
@@ -471,7 +500,7 @@ function displaySavedPizzas() {
                     <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
                     <h5 class="card-title">${pizza.pizzaName}</h5>
                     <p class="card-text">${pizza.pizzaDescription}</p>
-                    <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
+                    <a id="viewPizzaButton" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
                     <button class="${favoriteClass}" onclick="toggleFavorite(${index})">${pizza.isFavorite ? 'Unfavorite' : 'Favorite'}</button>
                 </div>
             </div>
@@ -502,7 +531,7 @@ function displayFavoritePizzas() {
                         <img src="${imageUrl}" class="img-fluid" alt="Pizza Image">
                         <h5 class="card-title">${pizza.pizzaName}</h5>
                         <p class="card-text">${pizza.pizzaDescription}</p>
-                        <a href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
+                        <a id="viewPizzaButton" href="#" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#viewPizzaModal" onclick="loadPizzaDetails(${index})">View Pizza</a>
                         <button class="${favoriteClass}" onclick="toggleFavorite(${index})">${pizza.isFavorite ? 'Unfavorite' : 'Favorite'}</button>
                     </div>
                 </div>
@@ -514,7 +543,7 @@ function displayFavoritePizzas() {
 
 // Initial display of all pizzas
 document.addEventListener('DOMContentLoaded', function () {
-    showAllPizzas();
+    document.querySelector('.nav-link.active').click();
 });
 
 
@@ -571,3 +600,4 @@ function shareRecipe() {
 
     doc.save(`${pizzaName}_Recipe.pdf`);
 }
+
