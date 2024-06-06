@@ -1,7 +1,7 @@
 {
-  "name": "abcd1234-tracker",
+  "name": "trng3377-tracker",
   "version": "0.0.1",
-  "description": "a template for DECO2017 Assessment 3",
+  "description": "A pizza webapp for DECO2017 Assessment 3",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
@@ -10,23 +10,24 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hamsall/abcd1234-tracker.git"
+    "url": "https://github.com/Rnnnnnnn12/trng3377-tracker"
   },
   "keywords": [
     "tracker"
   ],
-  "author": "hamsall",
+  "author": "Tran Bao Ngoc Nguyen",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/hamsall/abcd1234-tracker/issues"
+    "url": "https://github.com/Rnnnnnnn12/trng3377-tracker/issues"
   },
-  "homepage": "https://github.com/hamsall/abcd1234-tracker#readme",
+  "homepage": "https://github.com/Rnnnnnnn12/trng3377-tracker#readme",
   "dependencies": {
-    "express": "^4.18.2",
+    "express": "^4.19.2",
     "sass": "^1.75.0"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.12.0",
     "parcel": "^2.12.0"
   }
+
 }
