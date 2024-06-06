@@ -50,11 +50,8 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-});
 
-
-document.addEventListener('DOMContentLoaded', function () {
-    // Load saved image from local storage
+     // Load saved image from local storage
     const savedImageURL = localStorage.getItem('uploadedImage');
     if (savedImageURL) {
         const imageDropBox = document.getElementById('imageDropBox');
@@ -111,8 +108,8 @@ document.addEventListener('DOMContentLoaded', function () {
             $('#fullscreenModal').modal('hide');
         }
     });
-
 });
+
 
 // Variables
 const ingredientInput = document.querySelector('.ingredient-input');
@@ -161,11 +158,6 @@ function addIngredient(event) {
     textButtonContainer.appendChild(newIngredient);
 
     saveLocal(ingredientInput.value, quantityInput.value, selectedUnit);
-
-    // const checked = document.createElement('button');
-    // checked.innerHTML = '<i class="fas fa-check"></i>';
-    // checked.classList.add('check-btn', 'btn', 'btn-success', 'ml-2');
-    // textButtonContainer.appendChild(checked);
 
     const deleted = document.createElement('button');
     deleted.innerHTML = '<i class="fas fa-trash"></i> X';
@@ -225,11 +217,6 @@ function getIngredients() {
         newIngredient.innerText = `${ingredientObj.ingredient} - ${ingredientObj.quantity} ${ingredientObj.unit}`;
         newIngredient.classList.add('ingredient-item');
         textButtonContainer.appendChild(newIngredient);
-
-        // const checked = document.createElement('button');
-        // checked.innerHTML = '<i class="fas fa-check"></i>';
-        // checked.classList.add("check-btn", 'btn', 'btn-success', 'ml-2');
-        // textButtonContainer.appendChild(checked);
 
         const deleted = document.createElement('button');
         deleted.innerHTML = '<i class="fas fa-trash"></i> X';
@@ -448,8 +435,6 @@ function createAndShowModal(modalContent) {
     $(modalDiv).find("#viewPizzaModal").modal('show');
 }
 
-
-
 // Function to show all pizzas
 function showAllPizzas(element) {
     document.getElementById('cardsContainer').innerHTML = '';
@@ -546,7 +531,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.querySelector('.nav-link.active').click();
 });
 
-
+// Share recipe function
 function shareRecipe() {
     const pizzaName = document.getElementById('modalPizzaName')?.textContent || 'No Name';
     const pizzaDescription = document.getElementById('modalPizzaDescription')?.textContent || 'No Description';

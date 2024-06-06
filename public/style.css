@@ -1,5 +1,3 @@
-/* NOTE: DO THE LAYOUT FOR THE VIEW PIZZA MODAL */
-
 /* General reset */
 body,
 h1,
@@ -43,7 +41,6 @@ p {
   padding-bottom: 5.5%;
   text-align: center;
 }
-
 
 /* Button styling */
 #addPizza {
@@ -255,7 +252,6 @@ hr {
   background-color: #6c757d;
 }
 
-
 /* General styles for nav links */
 .nav-link {
   display: inline-block;
@@ -373,7 +369,6 @@ ul li {
   margin-bottom: 8px;
 }
 
-
 /* General footer styling */
 footer {
   padding: 2rem 0;
@@ -423,7 +418,6 @@ footer ul li a:hover {
 }
 
 @media (max-width: 576px) {
-
   /* Adjust heading font size and padding for small screens */
   #mainHeading {
     font-size: 3rem;
